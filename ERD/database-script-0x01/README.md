@@ -1,34 +1,34 @@
 # Airbnb Database Schema
 
-This folder contains the SQL script needed to set up the full relational database structure for an Airbnb-like application.
+This folder contains SQL scripts to set up and manage the core database for an Airbnb-like application.
 
 ## Files
 
-- **schema.sql**: This file defines all tables, fields, constraints, and relationships for the Airbnb database system.
+- **schema.sql**: SQL script that creates all tables, constraints, keys, and indexes for the Airbnb project database.
 
-## Schema Overview
+## About the Schema
 
-The database schema includes the following tables:
+The schema defines these main tables:
 
-- **User**: Stores information for guests, hosts, and admins.
-- **Property**: Each property is linked to a host user and contains details like name, price per night, and location.
-- **Booking**: Tracks reservations made by users for properties, including booking dates, status, and price.
-- **Payment**: Records payment details for each booking, including payment method and amount.
-- **Review**: Allows users to leave ratings and comments on properties they've stayed at.
-- **Message**: Stores private messages sent between users.
+- **User**: Stores all users (guests, hosts, admins) with unique emails and required information.
+- **Property**: Listings for rent, tied to a host/user, with details like location, price, and description.
+- **Booking**: Reservations for properties, recording which user booked what, when.
+- **Payment**: Payment records for completed bookings.
+- **Review**: Feedback left by users for properties they have stayed at.
+- **Message**: Private communication between users (guests and hosts).
 
-## Keys and Constraints
+## Constraints and Indexes
 
-- All tables use UUIDs for primary keys, enforcing global uniqueness.
-- Foreign keys maintain relationships and ensure data integrity.
-- Unique and not-null constraints enforce valid, non-duplicate records.
-- Indexes are used on frequently queried columns like emails and foreign keys for performance.
+- UUIDs are used for all primary keys.
+- Foreign keys maintain the relationships between users, properties, bookings, and payments.
+- ENUM types restrict fields like role, status, and payment_method.
+- Indexes improve lookup performance for important fields.
 
-## How to Use
+## How To Use
 
-1. Run the `schema.sql` file on your SQL database server to create all necessary tables and relationships.
-2. Make sure your SQL environment supports `ENUM` and `UUID` types (e.g., PostgreSQL). For MySQL, you may need to adjust types accordingly.
+1. Run `schema.sql` in your SQL database server (PostgreSQL recommended) to create the required tables and constraints before inserting any data.
+2. Make sure to adapt ENUM and UUID types if using a different SQL database system.
 
 ## Purpose
 
-This schema is designed for scalability and normalization (up to 3NF). It models real-world Airbnb features to minimize redundancy, ensure fast queries, and support core booking, property, messaging, and review functionalities.
+This schema is optimized for data consistency, easy querying, and maintainability, reflecting modern best practices for production-ready relational databases in a rental marketplace scenario.
