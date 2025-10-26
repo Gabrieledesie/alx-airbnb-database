@@ -1,35 +1,76 @@
-CREATE TABLE Users (
-    id INT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    phone VARCHAR(20)
+-- Airbnb Database Schema
+
+CREATE TABLE User (
+    user_id UUID PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(32),
+    role ENUM('guest', 'host', 'admin') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_user_email (email)
 );
 
-CREATE TABLE Properties (
-    id INT PRIMARY KEY,
-    title VARCHAR(200) NOT NULL,
-    description TEXT,
-    owner_id INT,
-    FOREIGN KEY (owner_id) REFERENCES Users(id)
+CREATE TABLE Property (
+    property_id UUID PRIMARY KEY,
+    host_id UUID NOT NULL,
+    name VARCHAR(200) NOT NULL,
+    description TEXT NOT NULL,
+    location VARCHAR(200) NOT NULL,
+    pricepernight DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (host_id) REFERENCES User(user_id),
+    INDEX idx_property_host (host_id)
 );
 
-CREATE TABLE Bookings (
-    id INT PRIMARY KEY,
-    user_id INT,
-    property_id INT,
-    date_from DATE,
-    date_to DATE,
-    FOREIGN KEY (user_id) REFERENCES Users(id),
-    FOREIGN KEY (property_id) REFERENCES Properties(id)
+CREATE TABLE Booking (
+    booking_id UUID PRIMARY KEY,
+    property_id UUID NOT NULL,
+    user_id UUID NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    total_price DECIMAL(10,2) NOT NULL,
+    status ENUM('pending', 'confirmed', 'canceled') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (property_id) REFERENCES Property(property_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id),
+    INDEX idx_booking_property (property_id),
+    INDEX idx_booking_user (user_id)
 );
 
-CREATE TABLE Payments (
-    id INT PRIMARY KEY,
-    booking_id INT,
-    amount DECIMAL(10, 2),
-    payment_date DATE,
-    FOREIGN KEY (booking_id) REFERENCES Bookings(id)
+CREATE TABLE Payment (
+    payment_id UUID PRIMARY KEY,
+    booking_id UUID NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    payment_method ENUM('credit_card', 'paypal', 'stripe') NOT NULL,
+    FOREIGN KEY (booking_id) REFERENCES Booking(booking_id),
+    INDEX idx_payment_booking (booking_id)
 );
 
-CREATE INDEX idx_user_id ON Bookings(user_id);
-CREATE INDEX idx_property_id ON Bookings(property_id);
+CREATE TABLE Review (
+    review_id UUID PRIMARY KEY,
+    property_id UUID NOT NULL,
+    user_id UUID NOT NULL,
+    rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    comment TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (property_id) REFERENCES Property(property_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id),
+    INDEX idx_review_property (property_id),
+    INDEX idx_review_user (user_id)
+);
+
+CREATE TABLE Message (
+    message_id UUID PRIMARY KEY,
+    sender_id UUID NOT NULL,
+    recipient_id UUID NOT NULL,
+    message_body TEXT NOT NULL,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES User(user_id),
+    FOREIGN KEY (recipient_id) REFERENCES User(user_id),
+    INDEX idx_message_sender (sender_id),
+    INDEX idx_message_recipient (recipient_id)
+);
