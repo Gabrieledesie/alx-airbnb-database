@@ -1,34 +1,39 @@
-# Airbnb Database Schema
+# Airbnb Database Schema Documentation
 
-This folder contains SQL scripts to set up and manage the core database for an Airbnb-like application.
+This directory contains the SQL scripts for creating the Airbnb project database schema.
 
 ## Files
 
-- **schema.sql**: SQL script that creates all tables, constraints, keys, and indexes for the Airbnb project database.
+- `schema.sql`: Contains all SQL statements to build the database's tables, constraints, indexes, and relationships.
 
-## About the Schema
+## Database Schema Overview
 
-The schema defines these main tables:
+The schema supports essential components for an Airbnb-like platform including:
 
-- **User**: Stores all users (guests, hosts, admins) with unique emails and required information.
-- **Property**: Listings for rent, tied to a host/user, with details like location, price, and description.
-- **Booking**: Reservations for properties, recording which user booked what, when.
-- **Payment**: Payment records for completed bookings.
-- **Review**: Feedback left by users for properties they have stayed at.
-- **Message**: Private communication between users (guests and hosts).
+- **User**: Stores information on guests, hosts, and admins.
+- **Property**: Details about rental properties listed by hosts.
+- **Booking**: Tracks reservations by users for properties.
+- **Payment**: Records payment information tied to bookings.
+- **Review**: Enables users to leave ratings and feedback on properties.
+- **Message**: Handles communication between users.
 
-## Constraints and Indexes
+## Important Features
 
-- UUIDs are used for all primary keys.
-- Foreign keys maintain the relationships between users, properties, bookings, and payments.
-- ENUM types restrict fields like role, status, and payment_method.
-- Indexes improve lookup performance for important fields.
+- Uniquely identifies each record with UUID primary keys.
+- Enforces data integrity with foreign keys and constraints.
+- Uses ENUM types for certain fields (status, roles, payment methods).
+- Includes indexes on key columns for performance optimization.
 
-## How To Use
+## Usage
 
-1. Run `schema.sql` in your SQL database server (PostgreSQL recommended) to create the required tables and constraints before inserting any data.
-2. Make sure to adapt ENUM and UUID types if using a different SQL database system.
+To implement the database:
 
-## Purpose
+1. Run `schema.sql` in a supported database environment (PostgreSQL recommended).
+2. Confirm all tables and constraints create successfully.
+3. Use this schema as the foundation for further data population and applications.
 
-This schema is optimized for data consistency, easy querying, and maintainability, reflecting modern best practices for production-ready relational databases in a rental marketplace scenario.
+## Notes
+
+Make sure your database setup supports UUID and ENUM types. Adaptions may be required for other SQL servers.
+
+This schema is normalized to at least the Third Normal Form (3NF) to minimize redundancy and improve data consistency.
